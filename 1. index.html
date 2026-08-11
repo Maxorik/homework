@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>nodejs server</title>
+</head>
+<body>
+    <button onclick="getUsers()">Get users</button>
+    <ul id="users"></ul>
+
+    <div style="display: inline-block;">
+        <label for="username">enter username</label>
+        <input type="text" name="username" id="username-input" />
+        <button onclick="checkUser()">check</button>
+        <p id="check-user-result"></p>
+    </div>
+<script>
+
+    /** получить список всех пользователей */
+    async function getUsers() {
+        const response = await fetch("/users", { method: "GET"});
+        const responseText = await response.json();
+
+        document.getElementById('users').textContent = '';
+
+        responseText.users.map(user => {
+            const li = document.createElement('li');
+            li.innerHTML = user;
+            document.getElementById('users').append(li)
+        })
+    }
+
+    /** Проверить наличие пользователя */
+    async function checkUser() {
+        const username = document.getElementById('username-input').value;
+        const resultText = document.getElementById('check-user-result');
+
+        resultText.textContent = '';
+
+        const response = await fetch(`/users/${username}`, { method: "GET"});
+        const responseText = await response.json();
+
+        resultText.textContent = responseText.result.toString();
+    }
+    
+</script>
+</body>
+</html>
