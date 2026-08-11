@@ -1,5 +1,5 @@
 /** небольшой сервер на nodejs
- * старт: node '.\1. nodejs_server.js'
+ * старт: node '.\nodejs_server.js'
  * localhost:6969
  */
 
