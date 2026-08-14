@@ -24,8 +24,9 @@ userRouter.get("/:username", function(request, response) {
 userRouter.post("/", function(request, response) {
     if (!request.body) return response.sendStatus(400);
     users.push(request.body["username"])
-    // можно добавить ответный json, если нужно
-    response.sendStatus(200)
+    response.status(201).json({
+        username: request.body.username
+    })
 })
 
 userRouter.put("/:username", function(request, response) {
@@ -36,6 +37,10 @@ userRouter.put("/:username", function(request, response) {
     const editedUserPos = users.indexOf(editedUsername)
     if (editedUserPos !== -1) {
         users[editedUserPos] = newUsername
+    } else {
+        return response.send(404).json({
+            error: 'user not found'
+        })
     }
 
     response.send({users: users})
@@ -46,6 +51,10 @@ userRouter.delete("/:username", function(request, response) {
     const deletedUserPos = users.indexOf(deletedUser);
     if (deletedUserPos !== -1) {
         users.splice(deletedUserPos, 1)
+    } else {
+        return response.send(404).json({
+            error: 'user not found'
+        })
     }
 
     response.send({users: users})
@@ -54,6 +63,13 @@ userRouter.delete("/:username", function(request, response) {
 
 app.use("/", function(request, response) {
     response.sendFile(__dirname + "/index.html");
+})
+
+/** обработка ошибок */
+app.use((err, req, res, next) => {
+    res.status(500).json({
+        message: err.message || 'server error'
+    })
 })
 
 app.listen(6969);
